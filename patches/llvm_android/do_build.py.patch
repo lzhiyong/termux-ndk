@@ -1,0 +1,98 @@
+--- a/llvm_android/do_build.py	2021-11-29 13:38:45.696697690 +0800
++++ b/llvm_android/do_build.py	2021-12-05 11:17:15.824409695 +0800
+@@ -55,9 +55,10 @@
+     tar = paths.pgo_profdata_tar()
+     if not tar:
+         return None
+-    utils.check_call(['tar', '-jxC', str(paths.OUT_DIR), '-f', str(tar)])
+     profdata_file = paths.OUT_DIR / paths.pgo_profdata_filename()
+     if not profdata_file.exists():
++        utils.check_call(['tar', '-jxC', str(paths.OUT_DIR), '-f', str(tar)])
++    if not profdata_file.exists():
+         raise RuntimeError(
+             f'Failed to extract profdata from {tar} to {paths.OUT_DIR}')
+     return profdata_file
+@@ -124,7 +125,7 @@
+     builders.CompilerRTBuilder().build()
+     # 32-bit host crts are not needed for Darwin
+     if hosts.build_host().is_linux:
+-        builders.CompilerRTHostI386Builder().build()
++        builders.CompilerRTHostAArch64Builder().build()
+     builders.LibOMPBuilder().build()
+     if build_lldb_server:
+         builders.LldbServerBuilder().build()
+@@ -635,6 +636,38 @@
+ 
+     return parser.parse_args()
+ 
++def copy_libraries(stage: LLVMBuilder):
++    prebuilt_toolchain: toolchains.Toolchain = toolchains.get_prebuilt_toolchain()
++    version = stage.installed_toolchain.version
++    stage_clang_libdir = stage.install_dir / 'lib64/clang' / version.long_version() / 'lib'
++    android = stage_clang_libdir / 'android'
++    linux = stage_clang_libdir / 'linux'
++    if not Path(linux).exists():
++        os.symlink(android, linux)
++        
++    if not os.path.exists(android / 'aarch64'):
++        os.mkdir(android / 'aarch64')
++    if not os.path.exists(android / 'arm'):
++        os.mkdir(android / 'arm')
++    if not os.path.exists(android / 'i386'):
++        os.mkdir(android / 'i386')
++    if not os.path.exists(android / 'x86_64'):
++        os.mkdir(android / 'x86_64')
++    
++    # copy libunwind and libatomic
++    shutil.copy2(stage.resource_dir/ 'aarch64/libunwind.a', android / 'aarch64')
++    shutil.copy2(stage.resource_dir/ 'aarch64/libatomic.a', android / 'aarch64')
++    shutil.copy2(stage.resource_dir/ 'arm/libunwind.a', android / 'arm')
++    shutil.copy2(stage.resource_dir/ 'arm/libatomic.a', android / 'arm')
++    shutil.copy2(stage.resource_dir/ 'i386/libunwind.a', android / 'i386')
++    shutil.copy2(stage.resource_dir/ 'i386/libatomic.a', android / 'i386')
++    shutil.copy2(stage.resource_dir/ 'x86_64/libunwind.a', android / 'x86_64')
++    shutil.copy2(stage.resource_dir/ 'x86_64/libatomic.a', android / 'x86_64')
++    
++    # copy libclang_rt.builtins, aarch64 no need
++    shutil.copy2(stage.resource_dir / 'libclang_rt.builtins-arm-android.a', android)
++    shutil.copy2(stage.resource_dir / 'libclang_rt.builtins-i686-android.a', android)
++    shutil.copy2(stage.resource_dir / 'libclang_rt.builtins-x86_64-android.a', android)
+ 
+ def main():
+     args = parse_args()
+@@ -677,7 +710,8 @@
+     stage1.build_android_targets = args.debug or instrumented
+     stage1.build()
+     set_default_toolchain(stage1.installed_toolchain)
+-
++    # cpoy libraries for stage1
++    copy_libraries(stage1)
+     if build_lldb:
+         # Swig is needed for both host and windows lldb.
+         swig_builder = builders.SwigBuilder()
+@@ -699,7 +733,7 @@
+         stage2.lto = not args.no_lto
+         stage2.build_instrumented = instrumented
+         stage2.profdata_file = profdata if profdata else None
+-
++        
+         libxml2_builder = builders.LibXml2Builder()
+         libxml2_builder.build()
+         stage2.libxml2 = libxml2_builder
+@@ -728,13 +762,14 @@
+         # Annotate the version string if this is an llvm-next build.
+         if args.build_llvm_next:
+             stage2_tags.append('ANDROID_LLVM_NEXT')
+-        stage2.build_tags = stage2_tags
+-
++        stage2.build_tags = stage2_tags      
+         stage2.build()
+         if not (stage2.build_instrumented or stage2.debug_build):
+             set_default_toolchain(stage2.installed_toolchain)
+ 
+         Builder.output_toolchain = stage2.installed_toolchain
++        # cpoy libraries for stage2
++        copy_libraries(stage2)
+         if hosts.build_host().is_linux and do_runtimes:
+             build_runtimes(build_lldb_server=build_lldb)
+ 

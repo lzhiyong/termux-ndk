@@ -1,0 +1,12 @@
+--- a/llvm_android/paths.py	2021-09-15 08:26:06.888888320 +0800
++++ b/llvm_android/paths.py	2021-09-15 08:11:33.015467933 +0800
+@@ -56,7 +56,10 @@
+ NDK_LIBCXXABI_HEADERS: Path = NDK_BASE / 'sources' / 'cxx-stl' / 'llvm-libc++abi' / 'include'
+ NDK_SUPPORT_HEADERS: Path = NDK_BASE / 'sources' / 'android' / 'support' / 'include'
+ 
+-GCC_ROOT: Path = PREBUILTS_DIR / 'gcc' / hosts.build_host().os_tag
++
++#GCC_ROOT: Path = PREBUILTS_DIR / 'gcc' / hosts.build_host().os_tag
++GCC_ROOT :Path = CLANG_PREBUILT_DIR
++
+ MINGW_ROOT: Path = PREBUILTS_DIR / 'gcc' / 'linux-x86' / 'host' / 'x86_64-w64-mingw32-4.8'

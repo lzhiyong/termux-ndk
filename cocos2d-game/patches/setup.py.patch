@@ -1,0 +1,11 @@
+--- setup.py	2021-08-28 23:59:44.080012264 +0800
++++ cocos2d-x/setup.py	2021-08-28 20:39:37.032149473 +0800
+@@ -370,7 +370,7 @@
+             android_path = os.path.join(
+                 android_sdk_root, 'tools', 'android.bat')
+         else:
+-            android_path = os.path.join(android_sdk_root, 'tools', 'android')
++            android_path = os.path.join(android_sdk_root, 'tools', 'bin', 'sdkmanagers')
+         if os.path.isfile(android_path):
+             return True
+         else:

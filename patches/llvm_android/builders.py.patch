@@ -1,0 +1,203 @@
+--- a/llvm_android/builders.py	2021-11-29 13:38:45.696697690 +0800
++++ b/llvm_android/builders.py	2021-12-05 11:12:18.094380035 +0800
+@@ -62,6 +62,7 @@
+ 
+ class Stage1Builder(base_builders.LLVMBuilder):
+     name: str = 'stage1'
++    resource_dir: Path
+     install_dir: Path = paths.OUT_DIR / 'stage1-install'
+     build_android_targets: bool = False
+     config_list: List[configs.Config] = [configs.host_config()]
+@@ -79,7 +80,13 @@
+         if self.build_lldb:
+             proj.add('lldb')
+         return proj
+-
++        
++    @property
++    def cflags(self) -> List[str]:
++        cflags = super().cflags
++        cflags.append('--target=aarch64-linux-android28')
++        return cflags
++    
+     @property
+     def ldflags(self) -> List[str]:
+         ldflags = super().ldflags
+@@ -87,7 +94,9 @@
+         # avoids specifying self.toolchain.lib_dir in rpath to find libc++ at
+         # runtime.
+         # [1] libc++ in our case, despite the flag saying -static-libstdc++.
+-        ldflags.append('-static-libstdc++')
++        self.resource_dir = self.toolchain.resource_dir
++        ldflags.append(str(self.resource_dir / 'libclang_rt.builtins-aarch64-android.a'))
++        ldflags.append('-static-libstdc++ -lunwind -ldl')
+         return ldflags
+ 
+     @property
+@@ -121,6 +130,7 @@
+ 
+ class Stage2Builder(base_builders.LLVMBuilder):
+     name: str = 'stage2'
++    resource_dir: Path
+     install_dir: Path = paths.OUT_DIR / 'stage2-install'
+     config_list: List[configs.Config] = [configs.host_config()]
+     remove_install_dir: bool = True
+@@ -154,18 +164,21 @@
+     @property
+     def ldflags(self) -> List[str]:
+         ldflags = super().ldflags
++        self.resource_dir = self.toolchain.resource_dir
++        ldflags.append(str(self.resource_dir / 'libclang_rt.builtins-aarch64-android.a'))
++        ldflags.append('-lunwind -ldl')
+         if self.build_instrumented:
+             # Building libcxx, libcxxabi with instrumentation causes linker errors
+             # because these are built with -nodefaultlibs and prevent libc symbols
+             # needed by libclang_rt.profile from being resolved.  Manually adding
+             # the libclang_rt.profile to linker flags fixes the issue.
+-            resource_dir = self.toolchain.resource_dir
+-            ldflags.append(str(resource_dir / 'libclang_rt.profile-x86_64.a'))
++            ldflags.append(str(self.resource_dir / 'libclang_rt.profile-aarch64-android.a'))
+         return ldflags
+ 
+     @property
+     def cflags(self) -> List[str]:
+         cflags = super().cflags
++        cflags.append('--target=aarch64-linux-android28')
+         if self.profdata_file:
+             cflags.append('-Wno-profile-instr-out-of-date')
+             cflags.append('-Wno-profile-instr-unprofiled')
+@@ -435,7 +448,49 @@
+         if stamp_path.exists():
+             shutil.rmtree(stamp_path)
+         super()._build_config()
++        
++class CompilerRTHostAArch64Builder(base_builders.LLVMRuntimeBuilder):
++    name: str = 'compiler-rt-aarch64-host'
++    src_dir: Path = paths.LLVM_PATH / 'compiler-rt'
++    config_list: List[configs.Config] = [configs.LinuxConfig(is_32_bit=False)]
++
++    @property
++    def install_dir(self) -> Path:
++        return self.output_toolchain.clang_lib_dir
++
++    @property
++    def cmake_defines(self) -> Dict[str, str]:
++        defines = super().cmake_defines
++        # Due to CMake and Clang oddities, we need to explicitly set
++        # CMAKE_C_COMPILER_TARGET and use march=armv8a in cflags below instead of
++        # relying on auto-detection from the Compiler-rt CMake files.
++        defines['CMAKE_C_COMPILER_TARGET'] = 'aarch64-linux-android28'
++        defines['COMPILER_RT_INCLUDE_TESTS'] = 'ON'
++        defines['COMPILER_RT_ENABLE_WERROR'] = 'OFF'
++        defines['SANITIZER_CXX_ABI'] = 'libstdc'
++        return defines
++
++    @property
++    def cflags(self) -> List[str]:
++        cflags = super().cflags
++        # compiler-rt/lib/gwp_asan uses PRIu64 and similar format-specifier macros.
++        # Add __STDC_FORMAT_MACROS so their definition gets included from
++        # inttypes.h.  This explicit flag is only needed here.  64-bit host runtimes
++        # are built in stage1/stage2 and get it from the LLVM CMake configuration.
++        # These are defined unconditionaly in bionic and newer glibc
++        # (https://sourceware.org/git/gitweb.cgi?p=glibc.git;h=1ef74943ce2f114c78b215af57c2ccc72ccdb0b7)
++        cflags.append('-D__STDC_FORMAT_MACROS')
++        cflags.append('--target=aarch64-linux-android28')
++        cflags.append('-march=armv8-a')
++        return cflags
+ 
++    def _build_config(self) -> None:
++        # Also remove the "stamps" created for the libcxx included in libfuzzer so
++        # CMake runs the configure again (after the cmake caches are deleted).
++        stamp_path = self.output_dir / 'lib' / 'fuzzer' / 'libcxx_fuzzer_aarch64-stamps'
++        if stamp_path.exists():
++            shutil.rmtree(stamp_path)
++        super()._build_config()
+ 
+ class LibUnwindBuilder(base_builders.LLVMRuntimeBuilder):
+     name: str = 'libunwind'
+@@ -541,7 +596,7 @@
+         defines = super().cmake_defines
+         defines['OPENMP_ENABLE_LIBOMPTARGET'] = 'FALSE'
+         defines['OPENMP_ENABLE_OMPT_TOOLS'] = 'FALSE'
+-        defines['LIBOMP_ENABLE_SHARED'] = 'TRUE' if self.is_shared else 'FALSE'
++        defines['LIBOMP_ENABLE_SHARED'] = 'FALSE' #if self.is_shared else 'FALSE'
+         # Some compiler-rt math builtins depend on libm, so link against it.
+         # TODO: Try to break the builtins->libm dependency (llvm.org/PR32279).
+         defines['LIBOMP_LIBFLAGS'] = '-lm'
+@@ -572,6 +627,12 @@
+         ]
+ 
+     @property
++    def cflags(self) -> List[str]:
++        cflags = super().cflags
++        cflags.append('--target=aarch64-linux-android28')
++        return cflags
++        
++    @property
+     def _lib_names(self) -> List[str]:
+         return ['libncurses', 'libform', 'libpanel']
+ 
+@@ -594,6 +655,7 @@
+         flags = []
+         flags.append('-I' + str(self.libncurses.include_dir))
+         flags.append('-I' + str(self.libncurses.include_dir / 'ncurses'))
++        flags.append('--target=aarch64-linux-android28')
+         return flags + super().cflags
+ 
+ 
+@@ -614,6 +676,12 @@
+         return flags
+ 
+     @property
++    def cflags(self) -> List[str]:
++        cflags = super().cflags
++        cflags.append('--target=aarch64-linux-android28')
++        return cflags
++
++    @property
+     def ldflags(self) -> List[str]:
+         ldflags = super().ldflags
+         # Point to the libc++.so from the toolchain.
+@@ -626,6 +694,12 @@
+     src_dir: Path = paths.XZ_SRC_DIR
+     config_list: List[configs.Config] = [configs.host_config()]
+     static_lib: bool = True
++    
++    @property
++    def cflags(self) -> List[str]:
++        cflags = super().cflags
++        cflags.append('--target=aarch64-linux-android28')
++        return cflags
+ 
+     @property
+     def cmake_defines(self) -> Dict[str, str]:
+@@ -644,6 +718,12 @@
+     src_dir: Path = paths.LIBXML2_SRC_DIR
+     config_list: List[configs.Config] = [configs.host_config()]
+     lib_version: str = '2.9.10'
++    
++    @property
++    def cflags(self) -> List[str]:
++        cflags = super().cflags
++        cflags.append('--target=aarch64-linux-android28')
++        return cflags
+ 
+     @contextlib.contextmanager
+     def _backup_file(self, file_to_backup: Path) -> Iterator[None]:
+@@ -721,6 +801,7 @@
+     def cmake_defines(self) -> Dict[str, str]:
+         defines = super().cmake_defines
+         # lldb depends on support libraries.
++        defines['CMAKE_POLICY_DEFAULT_CMP0116'] = 'OLD'
+         defines['LLVM_ENABLE_PROJECTS'] = 'clang;lldb'
+         defines['LLVM_TARGETS_TO_BUILD'] = self._llvm_target
+         defines['LLVM_TABLEGEN'] = str(self.toolchain.build_path / 'bin' / 'llvm-tblgen')
+@@ -946,7 +1027,6 @@
+         cflags.append('-D_LIBCXXABI_DISABLE_VISIBILITY_ANNOTATIONS')
+         return cflags
+ 
+-
+ class WindowsToolchainBuilder(base_builders.LLVMBuilder):
+     name: str = 'windows-x86-64'
+     toolchain_name: str = 'stage1'

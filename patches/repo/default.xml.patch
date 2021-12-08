@@ -1,0 +1,51 @@
+--- a/.repo/manifests/default.xml	2021-09-15 20:53:08.585116555 +0800
++++ b/.repo/manifests/default.xml	2021-09-15 20:51:11.965104938 +0800
+@@ -25,7 +25,7 @@
+   <project path="external/toolchain-utils" name="platform/external/toolchain-utils" revision="master" />
+ 
+   <!-- Binutils/gcc toolchains -->
+-  
++  <!-- no need to download
+   <project path="prebuilts/gcc/darwin-x86/aarch64/aarch64-linux-android-4.9" name="platform/prebuilts/gcc/darwin-x86/aarch64/aarch64-linux-android-4.9" groups="pdk,darwin,arm" clone-depth="1" />
+   <project path="prebuilts/gcc/darwin-x86/arm/arm-linux-androideabi-4.9" name="platform/prebuilts/gcc/darwin-x86/arm/arm-linux-androideabi-4.9" clone-depth="1" />
+   <project path="prebuilts/gcc/darwin-x86/host/headers" name="platform/prebuilts/gcc/darwin-x86/host/headers" groups="pdk,darwin" clone-depth="1" />
+@@ -36,16 +36,21 @@
+   <project path="prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.17-4.8" name="platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.17-4.8" clone-depth="1" />
+   <project path="prebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8" name="platform/prebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8" clone-depth="1" />
+   <project path="prebuilts/gcc/linux-x86/x86/x86_64-linux-android-4.9" name="platform/prebuilts/gcc/linux-x86/x86/x86_64-linux-android-4.9" groups="pdk,linux,x86" clone-depth="1" />
+-
++  -->
++  
+   <!-- CMake prebuilts -->
++  <!-- no need to download
+   <project path="prebuilts/cmake/darwin-x86" name="platform/prebuilts/cmake/darwin-x86" clone-depth="1" />
++  -->
+   <project path="prebuilts/cmake/linux-x86" name="platform/prebuilts/cmake/linux-x86" clone-depth="1" />
+ 
+   <!-- build-tools prebuilts (includes ninja) -->
+   <project path="prebuilts/build-tools" name="platform/prebuilts/build-tools" clone-depth="1" />
+ 
+   <!-- Go prebuilts -->
++  <!-- no need to download
+   <project path="prebuilts/go/darwin-x86" name="platform/prebuilts/go/darwin-x86" groups="darwin,pdk,tradefed" clone-depth="1" />
++  -->
+   <project path="prebuilts/go/linux-x86" name="platform/prebuilts/go/linux-x86" groups="linux,pdk,tradefed" clone-depth="1" />
+ 
+   <!-- Dependencies for lldb -->
+@@ -57,12 +62,16 @@
+ 
+   <!-- Python prebuilts -->
+   <project path="prebuilts/python/linux-x86" name="platform/prebuilts/python/linux-x86" clone-depth="1" revision="llvm-toolchain" />
++  <!-- no need to download
+   <project path="prebuilts/python/darwin-x86" name="platform/prebuilts/python/darwin-x86" clone-depth="1" revision="llvm-toolchain" />
+   <project path="prebuilts/python/windows-x86" name="platform/prebuilts/python/windows-x86" clone-depth="1" revision="llvm-toolchain" />
++  -->
+   
+   <!-- Prebuilts (for ease of updating) -->
++  <!-- no need to download
+   <project path="prebuilts/clang/host/darwin-x86" name="platform/prebuilts/clang/host/darwin-x86" clone-depth="1" />
+   <project path="prebuilts/clang/host/windows-x86" name="platform/prebuilts/clang/host/windows-x86" clone-depth="1" />
++  -->
+   <project path="prebuilts/clang/host/linux-x86" name="platform/prebuilts/clang/host/linux-x86" clone-depth="1" />
+   
+   <!-- NDK headers/libraries -->

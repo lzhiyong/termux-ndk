@@ -1,0 +1,11 @@
+--- a/cmake/share/cmake-3.22/Modules/Platform/Android.cmake	2021-11-18 23:51:22.000000000 +0800
++++ b/cmake/share/cmake-3.22/Modules/Platform/Android.cmake	2021-12-05 10:55:49.174568422 +0800
+@@ -9,7 +9,7 @@
+ set(ANDROID 1)
+ 
+ # Natively compiling on an Android host doesn't need these flags to be reset.
+-if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Android")
++if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Android" AND NOT CMAKE_ANDROID_NDK)
+   return()
+ endif()
+ 

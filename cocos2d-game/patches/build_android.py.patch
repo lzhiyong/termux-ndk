@@ -1,0 +1,45 @@
+--- build_android.py	2021-08-29 00:02:59.120031694 +0800
++++ cocos2d-x/tools/cocos2d-console/plugins/plugin_compile/build_android.py	2021-08-28 21:56:19.055941253 +0800
+@@ -210,14 +210,17 @@
+         local_porps_path = os.path.join(folder_path, 'local.properties')
+         sdk_dir = self.sdk_root
+         ndk_dir = cocos.check_environment_variable('NDK_ROOT')
++        cmake_dir = os.path.join(sdk_dir, 'cmake')
+         if cocos.os_is_win32():
+             # On Windows, the path should be like:
+             # sdk.dir = C:\\path\\android-sdk
+             sdk_dir = sdk_dir.replace('\\', '\\\\')
+             ndk_dir = ndk_dir.replace('\\', '\\\\')
++            cmake_dir = cmake_dir.replace('\\', '\\\\')
+         lines = [
+             'sdk.dir=%s\n' % sdk_dir,
+-            'ndk.dir=%s\n' % ndk_dir
++            'ndk.dir=%s\n' % ndk_dir,
++            'cmake.dir=%s\n' % cmake_dir
+         ]
+         f = open(local_porps_path, 'w')
+         f.writelines(lines)
+@@ -397,14 +400,15 @@
+                                                                (build_tools_ver, check_path)))
+ 
+         # invoke gradlew for gradle building
+-        if cocos.os_is_win32():
+-            gradle_path = os.path.join(self.app_android_root, 'gradlew.bat')
+-        else:
+-            gradle_path = os.path.join(self.app_android_root, 'gradlew')
+-
+-        if not os.path.isfile(gradle_path):
+-            raise cocos.CCPluginError(MultiLanguage.get_string('COMPILE_ERROR_GRALEW_NOT_EXIST_FMT', gradle_path),
+-                                      cocos.CCPluginError.ERROR_PATH_NOT_FOUND)
++        gradle_path = 'gradle'
++        #if cocos.os_is_win32():
++        #    gradle_path = os.path.join(self.app_android_root, 'gradlew.bat')
++        #else:
++        #    gradle_path = os.path.join(self.app_android_root, 'gradlew')
++
++        #if not os.path.isfile(gradle_path):
++        #    raise cocos.CCPluginError(MultiLanguage.get_string('COMPILE_ERROR_GRALEW_NOT_EXIST_FMT', gradle_path),
++        #                              cocos.CCPluginError.ERROR_PATH_NOT_FOUND)
+ 
+         mode_str = 'Debug' if mode == 'debug' else 'Release'
+         cmd = '"%s" --parallel --info assemble%s' % (gradle_path, mode_str)

@@ -1,0 +1,14 @@
+--- a/llvm-project/lldb/source/Core/IOHandlerCursesGUI.cpp	2021-11-30 13:34:50.967178079 +0800
++++ b/llvm-project/lldb/source/Core/IOHandlerCursesGUI.cpp	2021-12-05 11:20:25.151196833 +0800
+@@ -9,6 +9,11 @@
+ #include "lldb/Core/IOHandlerCursesGUI.h"
+ #include "lldb/Host/Config.h"
+ 
++#ifdef CURSES_HAVE_NCURSES_CURSES_H
++#undef CURSES_HAVE_NCURSES_CURSES_H
++#endif
++#define CURSES_HAVE_NCURSES_CURSES_H 1
++
+ #if LLDB_ENABLE_CURSES
+ #if CURSES_HAVE_NCURSES_CURSES_H
+ #include <ncurses/curses.h>

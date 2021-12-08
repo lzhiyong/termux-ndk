@@ -1,0 +1,12 @@
+--- CCLuaEngine.cpp	2021-08-29 00:00:17.800015623 +0800
++++ cocos2d-x/cocos/scripting/lua-bindings/manual/CCLuaEngine.cpp	2021-08-28 19:58:19.198569302 +0800
+@@ -36,7 +36,9 @@
+ #include "base/CCDirector.h"
+ #include "base/CCEventCustom.h"
+ 
++#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+ #pragma comment(lib,"lua51.lib")
++#endif
+ 
+ NS_CC_BEGIN
+ 
