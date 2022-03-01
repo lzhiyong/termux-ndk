@@ -1,4 +1,4 @@
-Android ndk for termux, that only support aarch64 host architecture.
+Android ndk for termux(only support aarch64 architecture devices).
 
 The source code from AOSP [llvm-toolchain](https://android.googlesource.com/toolchain/llvm-project), which is consistent with the official Ndk version.
 
@@ -11,18 +11,14 @@ For more details information, please refer to [toolchain readme docs](https://gi
 
 ####  How to build
 
-Termux needs to install aarch64 version of Linux to download the source code, we are not using it to compile.
-
 In order to save storage , there are some prebuilts tools that do not need to be downloaded. 
 comment out them in the llvm-toolchain/.repo/manifests/default.xml file, click [here](https://github.com/Lzhiyong/termux-ndk/blob/master/patches/repo/default.xml.patch) for example.
 
 ```bash
-pkg install proot-distro
-proot-distro install archlinux
 
-# I assume that you have installed the ArchLinux
-# install repo
-pacman -S repo 
+# install repo, now python supports multiprocessing module
+curl https://storage.googleapis.com/git-repo-downloads/repo > ~/../usr/bin/repo
+chmod a+rx ~/../usr/bin/repo
 
 cd /data/data/com.termux/files/home 
 mkdir llvm-toolchain && cd llvm-toolchain
@@ -38,9 +34,6 @@ cp /path/to/android/android-ndk-r23b/toolchains/llvm/prebuilt/linux-x86_64/manif
 repo init -m manifest_7714059.xml
 
 repo sync -c -j4
-
-# sync finish, exit ArchLinux
-exit
 
 ```
  ****
@@ -108,15 +101,6 @@ $NDK_TOOLCHAIN/bin/clang++ --target=aarch64-linux-android28 test.cpp -o test
 
 ```
  **** 
- 
-#### Building simpleperf
-```bash
-# simpleperf no need to compile
-cd android-ndk-r23b/simpleperf/bin/linux/aarch64
-
-ln -sf ../../android/arm64/simpleperf ./simpleperf
-
-```
 
  **** 
 #### Building shader-tools

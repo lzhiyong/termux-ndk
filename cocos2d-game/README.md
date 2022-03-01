@@ -33,13 +33,13 @@ source ~/.bashrc
 
 #### Modify the templates projects
 
-* set the gradle plugin version, see [cpp-template-default/proj.android/build.gradle](https://github.com/Lzhiyong/termux-ndk/blob/master/cocos2d-game/templates/cpp-template-default/proj.android/build.gradle)
+* set the gradle plugin version, see [cpp-template-default/proj.android/build.gradle](https://github.com/Lzhiyong/termux-ndk/blob/902f483485b42c73ffe354b725a4676f8b0c468a/cocos2d-game/templates/cpp-template-default/proj.android/build.gradle#L10)
 
-* add Android SDK build-tools version, see [cpp-template-default/proj.android/gradle.properties](https://github.com/Lzhiyong/termux-ndk/blob/master/cocos2d-game/templates/cpp-template-default/proj.android/gradle.properties)
+* add Android SDK build-tools version, see [cpp-template-default/proj.android/gradle.properties](https://github.com/Lzhiyong/termux-ndk/blob/902f483485b42c73ffe354b725a4676f8b0c468a/cocos2d-game/templates/cpp-template-default/proj.android/gradle.properties#L30)
 
-* set buildToolsVersion, see [cpp-template-default/proj.android/app/build.gradle](https://github.com/Lzhiyong/termux-ndk/blob/master/cocos2d-game/templates/cpp-template-default/proj.android/app/build.gradle)
+* set buildToolsVersion, see [cpp-template-default/proj.android/app/build.gradle](https://github.com/Lzhiyong/termux-ndk/blob/902f483485b42c73ffe354b725a4676f8b0c468a/cocos2d-game/templates/cpp-template-default/proj.android/app/build.gradle#L8)
 
-* set buildToolsVersion for libcocos2dx, see [libcocos2dx/build.gradle](https://github.com/Lzhiyong/termux-ndk/blob/master/cocos2d-game/templates/libcocos2dx/build.gradle)
+* set buildToolsVersion for libcocos2dx, see [libcocos2dx/build.gradle](https://github.com/Lzhiyong/termux-ndk/blob/902f483485b42c73ffe354b725a4676f8b0c468a/cocos2d-game/templates/libcocos2dx/build.gradle#L6)
 
 * lua-template-default is the same
 
