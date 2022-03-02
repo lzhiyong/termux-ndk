@@ -1,4 +1,4 @@
-Android ndk for Termux</br>
+**Android ndk for Termux**</br>
 requirement
 * architecture: aarch64
 * os version: android 9 and above 
