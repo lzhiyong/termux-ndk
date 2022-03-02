@@ -1,4 +1,7 @@
-Android ndk for termux(only support aarch64 architecture devices).
+Android ndk for Termux
+requirement
+* architecture: aarch64
+* os version: android 9 and above 
 
 The source code from AOSP [llvm-toolchain](https://android.googlesource.com/toolchain/llvm-project), which is consistent with the official Ndk version.
 
