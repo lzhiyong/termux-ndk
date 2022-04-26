@@ -24,7 +24,7 @@ Getting Started
 
 Screenshots
 -----------
-![screenshot](screenshot.png)
+![screenshot](gles2.jpg)
 
 Support
 -------

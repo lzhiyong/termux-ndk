@@ -29,7 +29,7 @@ Getting Started
 
 Screenshots
 -----------
-![screenshot](screenshot.png)
+![screenshot](gles3.jpg)
 
 Support
 -------
