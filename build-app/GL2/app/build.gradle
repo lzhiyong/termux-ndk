@@ -1,0 +1,39 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "32.0.0"
+    
+    defaultConfig {
+        applicationId 'com.android.gl2'
+        minSdkVersion 21
+        targetSdkVersion 28
+        externalNativeBuild {
+            cmake {
+                // Available arguments are inside ${SDK}/cmake/.../android.toolchain.cmake file
+                arguments '-DANDROID_STL=c++_static'
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                          'proguard-rules.pro'
+        }
+    }
+    
+    externalNativeBuild {
+        cmake {
+            version '3.18.5+'
+            path 'src/main/cpp/CMakeLists.txt'
+        }
+    }
+    
+    //externalNativeBuild {
+    //    ndkBuild {
+    //        path 'src/main/cpp/Android.mk'
+    //    }
+    //}
+}

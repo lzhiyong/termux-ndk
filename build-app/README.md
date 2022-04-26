@@ -26,7 +26,7 @@ Modify the `project/build.gradle` file
 ```build.gradle
 // set the Android gradle plugin version 
 dependencies {
-    classpath 'com.android.tools.build:gradle:7.0.3'
+    classpath 'com.android.tools.build:gradle:7.1.0'
 }
 ```
 Modify the project `app/build.gradle` file
@@ -35,7 +35,7 @@ Modify the project `app/build.gradle` file
 android {
     ...
     // set the build tools version
-    buildToolsVersion "31.0.0"
+    buildToolsVersion "32.0.0"
        
     defaultConfig {
         externalNativeBuild {
@@ -50,7 +50,7 @@ android {
         cmake {
             path "src/main/cpp/CMakeLists.txt"
             // If your cmake version >= 3.21, you must specify a version
-            // 3.18.5+ or 3.22.0 and so on
+            // 3.18.5+ or 3.23.1 and so on
             version "3.18.5+"
         }
     }
@@ -59,17 +59,17 @@ android {
 ```
 
 Execute the `gradle build` command to start building the android app, when building for the first time, the below error will occur.</br> 
-this is because the gradle plugin will download a corresponding version of aapt2-7.0.3-7396180-linux.jar, we need to replace it.
+this is because the gradle plugin will download a corresponding version of aapt2-7.1.0-7984345-linux.jar, we need to replace it.
 <a href="./screenshot/build_aapt2_error1.jpg"><img src="./screenshot/build_aapt2_error1.jpg" width="100%" /></a>
 
-Replace the aapt2 in aapt2-7.0.3-7396180-linux.jar inside with [sdk-tools/build-tools/aapt2](https://github.com/Lzhiyong/sdk-tools/releases)
+Replace the aapt2 in aapt2-7.1.0-7984345-linux.jar inside with [sdk-tools/build-tools/aapt2](https://github.com/Lzhiyong/sdk-tools/releases)
 ```bash
-# aapt2 is inside the jar file(aapt2-7.0.3-7396180-linux.jar)
+# aapt2 is inside the jar file(aapt2-7.1.0-7984345-linux.jar)
 # because the aapt2 is x86_64 architecture not aarch64, so we need to replace it
 # execute the find command to search aapt2-xxx-linux.jar, then replace it
 cd ~/.gradle
 find . -type f -name aapt2-*-linux.jar
-cp /path/to/aapt2-7.0.3-7396180-linux.jar ./caches/modules-2/files-2.1/com.android.tools.build/aapt2/7.0.3-7396180/942684a205d274f6b23f6d066cafcc12a17ce9ff/aapt2-7.0.3-7396180-linux.jar
+cp /path/to/aapt2-7.1.0-7984345-linux.jar ./caches/modules-2/files-2.1/com.android.tools.build/aapt2/7.1.0-7984345/942684a205d274f6b23f6d066cafcc12a17ce9ff/aapt2-7.1.0-7984345-linux.jar
 ```
 <a href="./screenshot/build_aapt2_error2.jpg"><img src="./screenshot/build_aapt2_error2.jpg" width="100%" /></a>
    
@@ -113,7 +113,7 @@ minSdkVersion=24
 targetSdkVersion=28
 ndkVersion=23.1.7779620
 compileSdkVersion=30
-buildToolsVersion=31.0.0
+buildToolsVersion=32.0.0
 
 # modify the build.gradle file
 # termux-app/app/build.gradle 
@@ -140,19 +140,15 @@ gradle assembleDebug
 **** 
 ### Building example
 ```bash
-# File Manager
-cd example/FileManager
+# GL2
+cd GL2 && gradle installDebug
 
-# cmake-example
-cd example/cmake-example
+# GL3
+cd GL3 && gradle installDebug
 
-# hello-jni-kotlinApp
-cd example/hello-jni-kotlinApp
-
-gradle assembleDebug
 ```
 <div align="left">
-    <img src="./screenshot/build_example1.jpg" width="50%" /><img src="./screenshot/build_example2.jpg" width="50%" />
+    <img src="./GL3/gles3.jpg" width="50%" /><img src="./GL2/gles2.jpg" width="50%" />
 </div>
 
 **** 
