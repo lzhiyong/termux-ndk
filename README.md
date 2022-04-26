@@ -9,6 +9,8 @@ How to build, please refer to [toolchain readme docs](https://github.com/Lzhiyon
 
 Building on device is not recommended and you may encounter some strange errors.
 
+ **** 
+
 **building android app with termux-ndk, please refer to [build-app](https://github.com/Lzhiyong/termux-ndk/tree/master/build-app)**
 
 **building cocos2d game for android with termux-ndk, please refer to [cocos2d-game](https://github.com/Lzhiyong/termux-ndk/tree/master/cocos2d-game)**
