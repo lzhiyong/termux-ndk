@@ -46,10 +46,7 @@ source ~/.bashrc
 
 #### Start new game project
 ```bash
-# enable adb for automatic installation of apk files
-adb devices && adb devices
-
-# project path
+# your project
 cd /path/to/your_project
 
 # you can also create a Lua project with -l lua

@@ -1,5 +1,5 @@
---- a/llvm_android/configs.py	2021-09-15 08:26:06.412221606 +0800
-+++ b/llvm_android/configs.py	2021-09-15 08:11:32.975467929 +0800
+--- a/llvm_android/configs.py	2022-06-19 16:20:36.600851613 +0800
++++ b/llvm_android/configs.py	2022-06-19 16:22:45.520864456 +0800
 @@ -162,10 +162,10 @@
      """Configuration for Linux targets."""
  

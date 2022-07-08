@@ -1,55 +1,39 @@
---- a/llvm_android/base_builders.py	2021-11-29 13:38:45.693364356 +0800
-+++ b/llvm_android/base_builders.py	2021-12-05 10:58:06.234390808 +0800
+--- a/llvm_android/base_builders.py	2022-06-19 16:20:36.597518279 +0800
++++ b/llvm_android/base_builders.py	2022-06-20 08:32:12.190524611 +0800
+@@ -156,7 +156,7 @@
+     @property
+     def cflags(self) -> List[str]:
+         """Additional cflags to use."""
+-        return []
++        return ['--target=aarch64-linux-android28']
+ 
+     @property
+     def cxxflags(self) -> List[str]:
 @@ -169,7 +169,7 @@
          ldflags = []
          # When cross compiling, toolchain libs won't work on target arch.
          if not self._is_cross_compiling():
 -            ldflags.append(f'-L{self.toolchain.lib_dir}')
-+            None #ldflags.append(f'-L{self.toolchain.lib_dir}')
++            pass #ldflags.append(f'-L{self.toolchain.lib_dir}')
          return ldflags
  
      @property
-@@ -211,6 +211,7 @@
-         cflags = super().cflags
-         cflags.append('-fPIC')
-         cflags.append('-Wno-unused-command-line-argument')
-+        cflags.append('--target=aarch64-linux-android28')
-         if self._config.sysroot:
-             cflags.append(f'--sysroot={self._config.sysroot}')
-         if self._config.target_os.is_darwin:
-@@ -225,6 +226,7 @@
-     def cxxflags(self) -> List[str]:
-         cxxflags = super().cxxflags
-         cxxflags.append('-stdlib=libc++')
-+        cxxflags.append('--target=aarch64-linux-android28')
-         return cxxflags
- 
-     @property
-@@ -523,7 +525,7 @@
-     liblzma: Optional[LibInfo] = None
-     libedit: Optional[LibInfo] = None
-     libncurses: Optional[LibInfo] = None
--
-+    
-     @property
-     def install_dir(self) -> Path:
-         return paths.OUT_DIR / f'{self.name}-install'
-@@ -608,9 +610,16 @@
-         defines = super().cmake_defines
+@@ -609,9 +609,16 @@
  
          defines['LLVM_ENABLE_PROJECTS'] = ';'.join(sorted(self.llvm_projects))
--
+ 
 -        defines['LLVM_TARGETS_TO_BUILD'] = ';'.join(sorted(self.llvm_targets))
 +        defines['LLVM_TARGETS_TO_BUILD']= 'all'
 +        defines['CLANG_DEFAULT_LINKER'] = 'lld'
          defines['LLVM_BUILD_LLVM_DYLIB'] = 'ON'
+-
 +        defines['LLVM_ENABLE_PIC'] = 'ON'
 +        defines['CMAKE_BUILD_WITH_INSTALL_RPATH'] = 'ON'
 +        defines['CMAKE_POLICY_DEFAULT_CMP0116'] = 'OLD'
-+        defines['LLVM_EXPERIMENTAL_TARGETS_TO_BUILD'] = 'AVR;RISCV'
 +        defines['LLVM_TARGET_ARCH'] = 'AArch64'
 +        defines['LLVM_HOST_TRIPLE'] = 'aarch64-unknown-linux-android'
 +        defines['CMAKE_BUILD_TYPE'] = 'Release'
- 
++ 
          if self.build_tags:
              tags_str = ''.join(tag + ', ' for tag in self.build_tags)
+         else:
