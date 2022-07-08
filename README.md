@@ -1,9 +1,9 @@
 **Android ndk for Termux(only supports aarch64 and Android 9 or above)**
 
-The source code from AOSP [llvm-toolchain](https://android.googlesource.com/toolchain/llvm-project), which is consistent with the official Ndk version.
+The source code from AOSP [llvm-toolchain](https://android.googlesource.com/toolchain/llvm-project), which is consistent with the official NDK version.
 
-At first, we don‘t need to rebuild the whole Ndk, since google already built most of it.
-so we only need to build the llvm toolchain, then replace the llvm inside Ndk.
+At first, we don‘t need to rebuild the whole NDK, since google already built most of it.
+so we only need to build the llvm toolchain, then replace the llvm inside NDK.
 
 How to build, please refer to [toolchain readme docs](https://github.com/Lzhiyong/termux-ndk/tree/master/docs)
 
