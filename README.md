@@ -15,5 +15,5 @@ Building `android app` with termux-ndk, please refer to [build-app](https://gith
 
 Building `cocos2d game` for android with termux-ndk, please refer to [cocos2d-game](https://github.com/Lzhiyong/termux-ndk/tree/master/cocos2d-game)
 
-I don't provide the `linux` and `32-bit` versions, because there is not enough time to maintain, please compile it by yourself!!
+I don't provide the `linux` and `32-bit` versions, because there is not enough time to maintain, please try to compile it by yourself!!
 
