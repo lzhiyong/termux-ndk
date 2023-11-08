@@ -1,0 +1,22 @@
+--- a/cmake/share/cmake-3.22/Modules/Platform/Android-Determine.cmake	2021-11-18 23:51:22.000000000 +0800
++++ b/cmake/share/cmake-3.22/Modules/Platform/Android-Determine.cmake	2021-12-05 10:56:02.534731135 +0800
+@@ -26,7 +26,7 @@
+ 
+ # Natively compiling on an Android host doesn't use the NDK cross-compilation
+ # tools.
+-if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Android")
++if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Android" AND NOT CMAKE_ANDROID_NDK)
+   return()
+ endif()
+ 
+@@ -268,7 +268,9 @@
+ 
+ if(CMAKE_ANDROID_NDK)
+   # Identify the host platform.
+-  if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
++  if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Android")
++    set(CMAKE_ANDROID_NDK_TOOLCHAIN_HOST_TAG "linux-aarch64")
++  elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
+     if(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "64")
+       set(CMAKE_ANDROID_NDK_TOOLCHAIN_HOST_TAG "darwin-x86_64")
+     else()

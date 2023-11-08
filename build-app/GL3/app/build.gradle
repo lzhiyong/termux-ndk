@@ -1,0 +1,44 @@
+apply plugin: 'com.android.application'
+
+def platformVersion = 24      // openGLES 3.2 min api level
+// def platformVersion = 18    //openGLES 3 min api level
+// def platformVersion = 12    //openGLES 2 min api level
+
+android {
+    compileSdkVersion 31
+    buildToolsVersion "34.0.0"
+    namespace = "com.android.gles3"
+    
+    defaultConfig {
+        applicationId 'com.android.gles3'
+        minSdkVersion "${platformVersion}"
+        targetSdkVersion 28
+        
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_STL=c++_static'
+            }
+        }
+    }
+    
+    buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                          'proguard-rules.pro'
+        }
+    }
+    
+    //externalNativeBuild {
+    //    cmake {
+    //        version '3.18.5+'
+    //        path 'src/main/cpp/CMakeLists.txt'
+    //    }
+    //}
+    
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/cpp/Android.mk'
+        }
+    }
+}

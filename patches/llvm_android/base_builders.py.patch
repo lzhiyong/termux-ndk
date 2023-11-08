@@ -1,0 +1,39 @@
+--- a/llvm_android/base_builders.py	2022-06-19 16:20:36.597518279 +0800
++++ b/llvm_android/base_builders.py	2022-06-20 08:32:12.190524611 +0800
+@@ -156,7 +156,7 @@
+     @property
+     def cflags(self) -> List[str]:
+         """Additional cflags to use."""
+-        return []
++        return ['--target=aarch64-linux-android28']
+ 
+     @property
+     def cxxflags(self) -> List[str]:
+@@ -169,7 +169,7 @@
+         ldflags = []
+         # When cross compiling, toolchain libs won't work on target arch.
+         if not self._is_cross_compiling():
+-            ldflags.append(f'-L{self.toolchain.lib_dir}')
++            pass #ldflags.append(f'-L{self.toolchain.lib_dir}')
+         return ldflags
+ 
+     @property
+@@ -609,9 +609,16 @@
+ 
+         defines['LLVM_ENABLE_PROJECTS'] = ';'.join(sorted(self.llvm_projects))
+ 
+-        defines['LLVM_TARGETS_TO_BUILD'] = ';'.join(sorted(self.llvm_targets))
++        defines['LLVM_TARGETS_TO_BUILD']= 'all'
++        defines['CLANG_DEFAULT_LINKER'] = 'lld'
+         defines['LLVM_BUILD_LLVM_DYLIB'] = 'ON'
+-
++        defines['LLVM_ENABLE_PIC'] = 'ON'
++        defines['CMAKE_BUILD_WITH_INSTALL_RPATH'] = 'ON'
++        defines['CMAKE_POLICY_DEFAULT_CMP0116'] = 'OLD'
++        defines['LLVM_TARGET_ARCH'] = 'AArch64'
++        defines['LLVM_HOST_TRIPLE'] = 'aarch64-unknown-linux-android'
++        defines['CMAKE_BUILD_TYPE'] = 'Release'
++ 
+         if self.build_tags:
+             tags_str = ''.join(tag + ', ' for tag in self.build_tags)
+         else:
