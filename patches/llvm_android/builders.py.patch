@@ -1,0 +1,31 @@
+--- a/llvm_android/builders.py	2022-06-19 16:20:36.597518279 +0800
++++ b/llvm_android/builders.py	2022-07-08 08:06:17.721316290 +0800
+@@ -87,7 +87,9 @@
+         # avoids specifying self.toolchain.lib_dir in rpath to find libc++ at
+         # runtime.
+         # [1] libc++ in our case, despite the flag saying -static-libstdc++.
+-        ldflags.append('-static-libstdc++')
++        resource_dir = self.toolchain.resource_dir
++        ldflags.append(str(resource_dir / 'libclang_rt.builtins-aarch64-android.a'))
++        ldflags.append('-lc++_static -lc++abi -lunwind -ldl')
+         return ldflags
+ 
+     @property
+@@ -154,13 +156,15 @@
+     @property
+     def ldflags(self) -> List[str]:
+         ldflags = super().ldflags
++        resource_dir = self.toolchain.resource_dir
++        ldflags.append(str(resource_dir / 'libclang_rt.builtins-aarch64-android.a'))
++        ldflags.append('-lunwind -ldl')
+         if self.build_instrumented:
+             # Building libcxx, libcxxabi with instrumentation causes linker errors
+             # because these are built with -nodefaultlibs and prevent libc symbols
+             # needed by libclang_rt.profile from being resolved.  Manually adding
+             # the libclang_rt.profile to linker flags fixes the issue.
+-            resource_dir = self.toolchain.resource_dir
+-            ldflags.append(str(resource_dir / 'libclang_rt.profile-x86_64.a'))
++            ldflags.append(str(resource_dir / 'libclang_rt.profile-aarch64.a'))
+         return ldflags
+ 
+     @property

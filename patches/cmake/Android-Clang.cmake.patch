@@ -1,0 +1,13 @@
+--- a/cmake/share/cmake-3.22/Modules/Platform/Android-Clang.cmake	2021-11-18 23:51:22.000000000 +0800
++++ b/cmake/share/cmake-3.22/Modules/Platform/Android-Clang.cmake	2021-12-05 10:55:02.941248123 +0800
+@@ -46,7 +46,9 @@
+ if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Android")
+   macro(__android_compiler_clang lang)
+   endmacro()
+-  return()
++  if(NOT CMAKE_ANDROID_NDK)
++    return()
++  endif()
+ endif()
+ 
+ include(Platform/Android-Common)

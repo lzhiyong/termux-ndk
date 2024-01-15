@@ -1,0 +1,11 @@
+--- a/llvm-project/lldb/include/lldb/Host/Editline.h	2021-11-30 13:34:49.653844615 +0800
++++ b/llvm-project/lldb/include/lldb/Host/Editline.h	2021-12-05 11:24:17.261484415 +0800
+@@ -43,7 +43,7 @@
+ 
+ #if defined(_WIN32)
+ #include "lldb/Host/windows/editlinewin.h"
+-#elif !defined(__ANDROID__)
++#else
+ #include <histedit.h>
+ #endif
+ 

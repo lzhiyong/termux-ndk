@@ -1,0 +1,14 @@
+--- a/llvm_android/do_build.py	2022-07-08 08:03:45.707967813 +0800
++++ b/llvm_android/do_build.py	2022-07-08 08:02:51.947962458 +0800
+@@ -55,9 +55,10 @@
+     tar = paths.pgo_profdata_tar()
+     if not tar:
+         return None
+-    utils.check_call(['tar', '-jxC', str(paths.OUT_DIR), '-f', str(tar)])
+     profdata_file = paths.OUT_DIR / paths.pgo_profdata_filename()
+     if not profdata_file.exists():
++        utils.check_call(['tar', '-jxC', str(paths.OUT_DIR), '-f', str(tar)])
++    if not profdata_file.exists():
+         raise RuntimeError(
+             f'Failed to extract profdata from {tar} to {paths.OUT_DIR}')
+     return profdata_file

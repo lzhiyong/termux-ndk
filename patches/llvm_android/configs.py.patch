@@ -1,0 +1,17 @@
+--- a/llvm_android/configs.py	2022-06-19 16:20:36.600851613 +0800
++++ b/llvm_android/configs.py	2022-06-19 16:22:45.520864456 +0800
+@@ -162,10 +162,10 @@
+     """Configuration for Linux targets."""
+ 
+     target_os: hosts.Host = hosts.Host.Linux
+-    sysroot: Optional[Path] = (paths.GCC_ROOT / 'host' / 'x86_64-linux-glibc2.17-4.8' / 'sysroot')
+-    gcc_root: Path = (paths.GCC_ROOT / 'host' / 'x86_64-linux-glibc2.17-4.8')
+-    gcc_triple: str = 'x86_64-linux'
+-    gcc_ver: str = '4.8.3'
++    sysroot: Optional[Path] = (paths.GCC_ROOT / 'sysroot')
++    gcc_root: Path = (paths.GCC_ROOT)
++    gcc_triple: str = 'aarch64-linux-android'
++    gcc_ver: str = '4.9.x'
+ 
+     @property
+     def ldflags(self) -> List[str]:

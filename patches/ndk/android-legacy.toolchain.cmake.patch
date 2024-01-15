@@ -1,0 +1,13 @@
+--- a/build/cmake/android-legacy.toolchain.cmake	2021-09-15 10:11:41.882220792 +0800
++++ b/build/cmake/android-legacy.toolchain.cmake	2021-09-15 20:05:55.892587467 +0800
+@@ -351,7 +351,9 @@
+   message(FATAL_ERROR "Invalid Android STL: ${ANDROID_STL}.")
+ endif()
+ 
+-if(CMAKE_HOST_SYSTEM_NAME STREQUAL Linux)
++if(CMAKE_HOST_SYSTEM_NAME STREQUAL Android)
++  set(ANDROID_HOST_TAG linux-aarch64)
++elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL Linux)
+   set(ANDROID_HOST_TAG linux-x86_64)
+ elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL Darwin)
+   set(ANDROID_HOST_TAG darwin-x86_64)

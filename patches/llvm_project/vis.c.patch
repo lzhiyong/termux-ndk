@@ -1,0 +1,12 @@
+--- a/external/libedit/src/vis.c	2020-11-28 16:17:05.333521910 +0800
++++ b/external/libedit/src/vis.c	2021-12-05 11:18:29.889675857 +0800
+@@ -85,6 +85,9 @@
+ #include <stdio.h>
+ #include <string.h>
+ 
++#ifndef NBBY
++#define NBBY 8
++#endif
+ 
+ /*
+  * The reason for going through the trouble to deal with character encodings
